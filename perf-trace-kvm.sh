@@ -55,11 +55,13 @@ post_trace () {
 do_trace () {
 	exec {pipe_r}>&-
 	PREV=""
+	PREV2=""
 	while true; do
 		DATE=$(date +%F.%H_%M_%S)
 		write_pipe "Collecting perf for $DATE"
 		perf record -ag "$PERF_OPTIONS" -o perf-record-$DATE sleep $INTERVAL
-		post_trace "$DATE" "$PREV" &
+		post_trace "$DATE" "$PREV2" &
+		PREV2=$PREV
 		PREV=$DATE
 	done
 }
