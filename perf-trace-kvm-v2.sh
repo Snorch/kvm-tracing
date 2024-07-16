@@ -23,5 +23,6 @@ finish_trace () {
 }
 trap 'finish_trace' SIGINT
 
-python3 ../detect-vm-panic.py
+python3 ../detect-vm-panic.py | tee detect-vm-panic.log
+pstree -sSpla 1 > pstree.log
 finish_trace
