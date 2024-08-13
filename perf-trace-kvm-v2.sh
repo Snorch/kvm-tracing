@@ -46,13 +46,15 @@ finish_trace () {
 	if [ -n "$LOCK_MONITORING_PID" ]; then
 		kill "$LOCK_MONITORING_PID"
 	fi
+
+	pstree -sSpla 1 > pstree.out
+	if [ -f /proc/sys/kernel/lock_stat ]; then
+		cat /proc/lock_stat > "lock_stat.out"
+	fi
+
 	exit 0
 }
 trap 'finish_trace' SIGINT
 
 python3 ../detect-vm-panic.py | tee detect-vm-panic.log
-pstree -sSpla 1 > pstree.log
-if [ -f /proc/sys/kernel/lock_stat ]; then
-	cat /proc/lock_stat > "lock_stat.out"
-fi
 finish_trace
